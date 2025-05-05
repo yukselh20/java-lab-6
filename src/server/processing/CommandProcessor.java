@@ -318,13 +318,10 @@ public class CommandProcessor {
                 return new Response("Error: Ticket data is missing for update command.", false);
             }
 
-            // --- ID KONTROLÜ BURADA ---
             Ticket existingTicket = collectionManager.getById(id);
             if (existingTicket == null) {
-                // ID bulunamadı, HATA DÖNÜYORUZ (Doğru davranış)
                 return new Response("Error: Ticket with ID " + id + " not found.", false);
             }
-            // --- KONTROL GEÇİLDİ, GÜNCELLEME YAPILACAK ---
 
             existingTicket.update(ticketData);
             // Gerekirse collectionManager.getCollection().put(existingTicket.getKey(), existingTicket);

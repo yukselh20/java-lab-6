@@ -21,18 +21,14 @@ public class ScriptReader {
     }
 
     /**
-     * Reads Ticket data line by line from the script scanner and builds a Ticket object.
-     * Mimics the input process of TicketForm but reads from the scanner.
-     * @return The constructed Ticket object.
-     * @throws IncorrectInputInScriptException If reading fails or data is invalid in script context.
-     * @throws InvalidFormException If constructed object data is logically invalid.
+     * Reads Ticket data line by line from the script scanner and creates a Ticket object.
      */
     public Ticket readTicket() throws IncorrectInputInScriptException, InvalidFormException {
         String name = readString("Enter Ticket name:");
         Coordinates coordinates = readCoordinates();
-        int price = readInt("Enter price (integer > 0):", 0);
-        long discount = readLong("Enter discount (long > 0 and <= 100):", 0, 100);
-        String comment = readStringOrNull("Enter comment (max 631 chars, or blank):", 631);
+        int price = readInt();
+        long discount = readLong();
+        String comment = readStringOrNull();
         TicketType type = readEnum("Enter Ticket type (" + TicketType.names() + "):", TicketType.class);
         Event event = readEventOptional();
 
@@ -55,13 +51,13 @@ public class ScriptReader {
     }
 
     private Event readEventOptional() throws IncorrectInputInScriptException, InvalidFormException {
-        String createEvent = readYesNo("Create an Event for the Ticket? (yes/no):");
+        String createEvent = readYesNo();
         if ("no".equalsIgnoreCase(createEvent)) {
             return null;
         }
         // Read Event data
         String eventName = readString("Enter Event name:");
-        ZonedDateTime eventDate = readDateTimeOptional("Enter Event date (ISO Zoned Date Time or blank):");
+        ZonedDateTime eventDate = readDateTimeOptional();
         EventType eventType = readEnum("Enter Event type (" + EventType.names() + "):", EventType.class);
         try {
             return Event.createEvent(eventName, eventDate, eventType);
@@ -81,36 +77,36 @@ public class ScriptReader {
         return value;
     }
 
-    private String readStringOrNull(String prompt, int maxLength) throws IncorrectInputInScriptException, InvalidFormException {
-        System.out.println("SCRIPT_INPUT: " + prompt);
+    private String readStringOrNull() throws IncorrectInputInScriptException, InvalidFormException {
+        System.out.println("SCRIPT_INPUT: " + "Enter comment (max 631 chars, or blank):");
         String value = safeNextLine();
         if (value.isEmpty()) return null;
-        if (value.length() > maxLength) {
-            throw new InvalidFormException("Input exceeds max length of " + maxLength);
+        if (value.length() > 631) {
+            throw new InvalidFormException("Input exceeds max length of " + 631);
         }
         return value;
     }
 
 
-    private int readInt(String prompt, int lowerBoundExclusive) throws IncorrectInputInScriptException {
-        System.out.println("SCRIPT_INPUT: " + prompt);
+    private int readInt() throws IncorrectInputInScriptException {
+        System.out.println("SCRIPT_INPUT: " + "Enter price (integer > 0):");
         String line = safeNextLine();
         try {
             int value = Integer.parseInt(line);
-            if (value > lowerBoundExclusive) return value;
-            throw new IncorrectInputInScriptException("Integer value must be greater than " + lowerBoundExclusive);
+            if (value > 0) return value;
+            throw new IncorrectInputInScriptException("Integer value must be greater than " + 0);
         } catch (NumberFormatException e) {
             throw new IncorrectInputInScriptException("Invalid integer format read from script.");
         }
     }
 
-    private long readLong(String prompt, long lowerBoundExclusive, long upperBoundInclusive) throws IncorrectInputInScriptException {
-        System.out.println("SCRIPT_INPUT: " + prompt);
+    private long readLong() throws IncorrectInputInScriptException {
+        System.out.println("SCRIPT_INPUT: " + "Enter discount (long > 0 and <= 100):");
         String line = safeNextLine();
         try {
             long value = Long.parseLong(line);
-            if (value > lowerBoundExclusive && value <= upperBoundInclusive) return value;
-            throw new IncorrectInputInScriptException("Long value must be > " + lowerBoundExclusive + " and <= " + upperBoundInclusive);
+            if (value > (long) 0 && value <= (long) 100) return value;
+            throw new IncorrectInputInScriptException("Long value must be > " + (long) 0 + " and <= " + (long) 100);
         } catch (NumberFormatException e) {
             throw new IncorrectInputInScriptException("Invalid long format read from script.");
         }
@@ -139,8 +135,8 @@ public class ScriptReader {
         }
     }
 
-    private ZonedDateTime readDateTimeOptional(String prompt) throws IncorrectInputInScriptException {
-        System.out.println("SCRIPT_INPUT: " + prompt);
+    private ZonedDateTime readDateTimeOptional() throws IncorrectInputInScriptException {
+        System.out.println("SCRIPT_INPUT: " + "Enter Event date (ISO Zoned Date Time or blank):");
         String line = safeNextLine();
         if (line.isEmpty()) return null;
         try {
@@ -150,8 +146,8 @@ public class ScriptReader {
         }
     }
 
-    private String readYesNo(String prompt) throws IncorrectInputInScriptException {
-        System.out.println("SCRIPT_INPUT: " + prompt);
+    private String readYesNo() throws IncorrectInputInScriptException {
+        System.out.println("SCRIPT_INPUT: " + "Create an Event for the Ticket? (yes/no):");
         String line = safeNextLine().toLowerCase(Locale.ENGLISH);
         if ("yes".equals(line) || "no".equals(line)) {
             return line;

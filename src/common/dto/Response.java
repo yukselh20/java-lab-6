@@ -28,14 +28,6 @@ public class Response implements Serializable { // Response artık dto altında
     // Getterlar
     public boolean isSuccess() { return success; }
 
-    // Payload'ı belirli bir tipe güvenli cast etmek için yardımcı metot
-    @SuppressWarnings("unchecked") // Dikkatli kullanılmalı
-    public <T> T getPayload(Class<T> type) {
-        if (payload != null && type.isAssignableFrom(payload.getClass())) {
-            return (T) payload;
-        }
-        return null; // Veya exception atılabilir
-    }
 
     @Override
     public String toString() {
