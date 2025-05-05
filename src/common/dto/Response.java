@@ -1,11 +1,13 @@
 package common.dto; // dto paketine taşı
 
 // import common.models.Ticket; // Payload içinde olacaksa spesifik import gerekmeyebilir
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Response implements Serializable { // Response artık dto altında
+    @Serial
     private static final long serialVersionUID = 302L;
 
     private final String message;
@@ -24,9 +26,7 @@ public class Response implements Serializable { // Response artık dto altında
     }
 
     // Getterlar
-    public String getMessage() { return message; }
     public boolean isSuccess() { return success; }
-    public Object getPayload() { return payload; } // Payload'ı Object olarak al
 
     // Payload'ı belirli bir tipe güvenli cast etmek için yardımcı metot
     @SuppressWarnings("unchecked") // Dikkatli kullanılmalı

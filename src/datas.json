@@ -1,7 +1,6 @@
 {
   "1": {
     "id": 1,
-    "key": 1,
     "name": "Hamza Yuksel",
     "coordinates": {
       "x": 500.0,
@@ -18,24 +17,8 @@
       "eventType": "CONCERT"
     }
   },
-  "2": {
-    "id": 6,
-    "key": 2,
-    "name": "hamza yeni",
-    "coordinates": {
-      "x": 121.0,
-      "y": 212.0
-    },
-    "creationDate": "2025-02-10",
-    "price": 1200,
-    "discount": 15,
-    "comment": null,
-    "type": "VIP",
-    "event": null
-  },
   "4": {
     "id": 7,
-    "key": 4,
     "name": "son deneme id icin",
     "coordinates": {
       "x": 50.0,
@@ -54,7 +37,6 @@
   },
   "5": {
     "id": 8,
-    "key": 5,
     "name": "deneme",
     "coordinates": {
       "x": 50.0,
@@ -73,7 +55,6 @@
   },
   "6": {
     "id": 9,
-    "key": 6,
     "name": "deneme event idsiz",
     "coordinates": {
       "x": 50.0,
@@ -92,7 +73,6 @@
   },
   "3": {
     "id": 10,
-    "key": 3,
     "name": "aralık",
     "coordinates": {
       "x": 250.0,
@@ -102,6 +82,38 @@
     "price": 1000,
     "discount": 15,
     "comment": null,
+    "type": "USUAL",
+    "event": null
+  },
+  "2": {
+    "id": 1,
+    "name": "hamza",
+    "coordinates": {
+      "x": 700.0,
+      "y": 700.0
+    },
+    "creationDate": "2025-05-04",
+    "price": 777,
+    "discount": 11,
+    "comment": null,
+    "type": "VIP",
+    "event": {
+      "name": "Basketball",
+      "date": null,
+      "eventType": "BASKETBALL"
+    }
+  },
+  "102": {
+    "id": 2,
+    "name": "Turkish Airlines Flight",
+    "coordinates": {
+      "x": -50.5,
+      "y": 100.0
+    },
+    "creationDate": "2025-05-04",
+    "price": 350,
+    "discount": 25,
+    "comment": "Economy ticket",
     "type": "USUAL",
     "event": null
   }

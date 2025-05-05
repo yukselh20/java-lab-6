@@ -5,7 +5,6 @@ import common.models.Ticket;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.stream.Collectors;
 import java.lang.*;
 
 /**
@@ -125,19 +124,6 @@ public class CollectionManager {
                 "Initialization date: " + (lastInitTime != null ? lastInitTime: "unknown") + "\n" +
                 "Last save date:" + (lastSaveTime != null ? lastSaveTime : "unsaved") + "\n" +
                 "Number of elements: " + collectionSize() + "\n";
-    }
-
-
-    /**
-     * Koleksiyondaki tüm ticket'ları string olarak döndürür.
-     * @return Tüm ticket'lar veya koleksiyon boşsa mesaj.
-     */
-
-    public String getAllTickets() {
-        if(collection.isEmpty()) return "The collection is empty!";
-        return collection.entrySet().stream()
-                .map(entry -> "Key: " + entry.getKey() + " - " + entry.getValue())
-                .collect(Collectors.joining("\n\n"));
     }
 
 

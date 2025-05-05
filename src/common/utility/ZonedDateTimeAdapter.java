@@ -12,13 +12,11 @@ public class ZonedDateTimeAdapter implements JsonSerializer<ZonedDateTime>, Json
 
     @Override
     public JsonElement serialize(ZonedDateTime src, Type typeOfSrc, JsonSerializationContext context) {
-        // ISO_ZONED_DATE_TIME formatında serileştiriyoruz.
         return new JsonPrimitive(src.format(DateTimeFormatter.ISO_ZONED_DATE_TIME));
     }
 
     @Override
     public ZonedDateTime deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        // ISO_ZONED_DATE_TIME formatında string'den ZonedDateTime nesnesi oluşturuyoruz.
         try {
             return ZonedDateTime.parse(json.getAsString(), DateTimeFormatter.ISO_ZONED_DATE_TIME);
         } catch (Exception e) {

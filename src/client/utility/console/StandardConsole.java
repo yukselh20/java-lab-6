@@ -15,15 +15,9 @@ public class StandardConsole implements Console {
     public void println(Object obj) {
         System.out.println(obj);
     }
-
     @Override
     public void printError(Object obj) {
         System.out.println("mistake: " + obj);
-    }
-
-    @Override
-    public void printTable(Object obj1, Object obj2) {
-        System.out.printf(" %-35s%-1s%n", obj1, obj2);
     }
 
     @Override

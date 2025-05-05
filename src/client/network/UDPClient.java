@@ -1,6 +1,5 @@
 package client.network;
 
-import common.Command;
 import common.dto.Request;
 import common.dto.Response;
 import common.exceptions.SerializationException;
@@ -11,8 +10,7 @@ import java.net.*; // SocketAddress, InetSocketAddress
 import java.nio.ByteBuffer; // ByteBuffer kullanacağız
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.DatagramChannel; // DatagramChannel kullanacağız
-import java.nio.channels.SelectionKey; // Gerekirse Selector için
-import java.nio.channels.Selector;    // Gerekirse Selector için
+
 
 // import java.net.*;
 // import java.nio.channels.DatagramChannel;
@@ -31,15 +29,11 @@ public class UDPClient {
     private static final int TIMEOUT_MS = 5000; //5sn yanıt bekleme süresi
     private static final int MAX_RETRIES = 3; //max send recieve attempts
 
-    private final String host;
-    private final int port;
     private DatagramChannel channel;
     private SocketAddress serverAddress;
     //private Selector selector; // Yanıtı beklerken selector kullanmak daha gelişmiş bir yöntem olabilir
 
     public UDPClient(String host, int port) {
-        this.host = host;
-        this.port = port;
         // connect(); // Veya bağlantı ilk istekte kurulur
         try {
             // Sunucu adresini oluştur
@@ -79,6 +73,7 @@ public class UDPClient {
      */
     public Response sendAndReceive(Request request) {
         byte[] requestBytes;
+
         try {
             requestBytes = SerializationUtils.serialize(request);
             // logger.debug("Serialized request: {} bytes", requestBytes.length);
@@ -136,7 +131,6 @@ public class UDPClient {
                         } else {
                             // logger.warn("Received packet from unexpected address: {}", fromAddress);
                             System.err.println("WARN: Received packet from unexpected address: " + fromAddress);
-                            // Ignore and continue waiting
                         }
                     }
                     // Yanıt gelmediyse kısa bekleme

@@ -33,8 +33,6 @@ public class ClientMain {
 
         // Ağ yöneticisini oluştur (henüz sadece taslak)
         UDPClient udpClient = new UDPClient(host, port);
-        // udpClient.connect(); // Bağlantı denemesi (sonra implemente edilecek)
-
 
         // Komut oluşturma ve çalıştırma mantığını yönetecek Runner
         // Runner artık doğrudan CollectionManager'a değil, UDPClient üzerinden sunucuya istek gönderecek
@@ -45,7 +43,7 @@ public class ClientMain {
         // Kapanış
         // logger.info("Client shutting down.");
         System.out.println("Client shutting down.");
-        // udpClient.close(); // Ağ kaynaklarını serbest bırak
+        udpClient.close(); // Ağ kaynaklarını serbest bırak
     }
 
 

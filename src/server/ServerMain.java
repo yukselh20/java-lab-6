@@ -12,6 +12,8 @@ import server.managers.CollectionManager;
 import server.managers.DumpManager;
 import server.network.UDPServer;
 
+import java.io.IOException;
+
 public class ServerMain {
 
     // private static final Logger logger = LoggerFactory.getLogger(ServerMain.class);
@@ -51,19 +53,18 @@ public class ServerMain {
         // Manager'ları başlat
         DumpManager dumpManager = new DumpManager(fileName);
         CollectionManager collectionManager = new CollectionManager(dumpManager);
+        UDPServer udpServer = new UDPServer(port, collectionManager);
 
         // Shutdown hook ekle (uygulama kapanırken koleksiyonu kaydetmek için)
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            // logger.info("Shutdown hook tetiklendi. Koleksiyon kaydediliyor...");
-            System.out.println("\nShutting down the server, saving the collection.");
+            System.out.println("\n[SHUTDOWN] Saving collection …");
+            udpServer.stop();                  // running = false + selector.wakeup()
             collectionManager.saveCollection();
-            System.out.println("Collection saved. Safe exit.");
-            // logger.info("Koleksiyon kaydedildi. Sunucu durduruldu.");
+            System.out.println("[SHUTDOWN] Collection saved.");
         }));
 
 
         // Ağ sunucusunu başlat ve çalıştır
-        UDPServer udpServer = new UDPServer(port, collectionManager);
         // logger.info("UDP Sunucu {} portunda dinlemeye başlıyor.", port);
         System.out.println("UDP Server starts listening on port: " + port);
         udpServer.run(); // Bu metot sunucu ana döngüsünü içerecek

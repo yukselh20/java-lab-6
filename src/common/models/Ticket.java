@@ -2,6 +2,7 @@ package common.models;
 
 import common.utility.Element;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
@@ -11,6 +12,7 @@ import java.util.Objects;
  * Ticket sınıfı.
  */
 public class Ticket extends Element implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
     private static int nextId = 1;
     private final int id;               // > 0, benzersiz, otomatik üretilir

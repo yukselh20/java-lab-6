@@ -7,17 +7,10 @@ import common.dto.*;
 import common.exceptions.*; // Exception'lar
 import common.exceptions.NoSuchElementException;
 import common.models.*; // Modeller
-import common.Command;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.*;
-/**
- * Manages interactive and script modes for the client application.
- * Parses user input, creates Command objects, sends them via UDPClient,
- * and displays the response.
- */
 
 
 //Uygulamanın interaktif ve script modlarını yöneten sınıf.
@@ -25,13 +18,12 @@ import java.util.*;
 // (veya yardımcı bir sınıfta) oluşturulacak.
 // CollectionManager bağımlılığını kaldıralım.
 // Komutlar artık doğrudan koleksiyonu değil, ağ üzerinden sunucuyu hedefleyecek.
-
-
 /**
  * Manages interactive and script modes for the client application.
  * Parses user input, creates Request DTOs, sends them via UDPClient,
  * and displays the response.
  */
+
 public class Runner {
 
     public enum ExitCode { OK, ERROR, EXIT }
@@ -123,11 +115,6 @@ public class Runner {
             return ExitCode.ERROR;
         }
 
-        if (requestToSend == null) {
-            console.printError("Command '" + commandName + "' not recognized or could not be prepared.");
-            return ExitCode.ERROR;
-        }
-
         // Oluşturulan isteği sunucuya gönder ve yanıtı al
         try {
             Response response = udpClient.sendAndReceive(requestToSend); // Eski sendCommandAndGetResponse yerine
@@ -162,7 +149,7 @@ public class Runner {
     private Request createRequest(String commandName, String commandArgs)
             throws WrongAmountOfElementsException, NumberFormatException, InvalidFormException, IncorrectInputInScriptException {
 
-        CommandType type = CommandType.valueOf(commandName.toUpperCase()); // Enum'a çevir
+        CommandType type = CommandType.valueOf(commandName.toUpperCase(Locale.ENGLISH));
 
         switch (type) {
             case HELP:
@@ -177,7 +164,7 @@ public class Runner {
             case REMOVE_KEY:
             case REPLACE_IF_LOWER: // Bu komutlar key + (bazıları) Ticket alır
                 if (commandArgs.isEmpty()) throw new WrongAmountOfElementsException();
-                Long key = Long.parseLong(commandArgs); // Sadece key alınıyor şimdilik
+                long key = Long.parseLong(commandArgs); // Sadece key alınıyor şimdilik
                 Ticket ticketForKeyCommands = null;
                 if (type == CommandType.INSERT || type == CommandType.REPLACE_IF_LOWER) {
                     console.println("=> Enter Ticket data" + (type == CommandType.REPLACE_IF_LOWER ? " for replacement (key: " + key +"):" : " for key " + key + ":"));
@@ -188,10 +175,10 @@ public class Runner {
 
             case UPDATE:
                 if (commandArgs.isEmpty()) throw new WrongAmountOfElementsException();
-                int id = Integer.parseInt(commandArgs);
+                int id = Integer.parseInt(commandArgs); // ID'yi al
                 console.println("=> Enter new data for Ticket ID#" + id + ":");
-                Ticket ticketForUpdate = new TicketForm(console).build();
-                // ID'yi String olarak gönderiyoruz
+                Ticket ticketForUpdate = new TicketForm(console).build(); // Veriyi al
+                // ID'yi String olarak gönderiyoruz, sunucu kontrol edecek
                 return new Request(type, commandArgs, ticketForUpdate);
 
             // case EXECUTE_SCRIPT: // Zaten yukarıda handle edildi

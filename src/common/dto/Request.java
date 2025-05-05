@@ -1,9 +1,12 @@
 package common.dto;
 
 import common.models.Ticket; // Modeli import et
+
+import java.io.Serial;
 import java.io.Serializable;
 
 public class Request implements Serializable {
+    @Serial
     private static final long serialVersionUID = 301L; // UID
 
     private final CommandType commandType;

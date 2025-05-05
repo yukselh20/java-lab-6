@@ -27,7 +27,6 @@ public class DumpManager {
             .registerTypeAdapter(ZonedDateTime.class, new ZonedDateTimeAdapter())
             .create();
     private final String fileName;
-    // kullanılmicak private final Console console;
 
     public DumpManager(String fileName) {
         this.fileName = fileName;

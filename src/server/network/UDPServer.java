@@ -1,6 +1,5 @@
 package server.network;
 
-import common.Command;
 import common.dto.Request;
 import common.dto.Response;
 import common.exceptions.SerializationException;
@@ -193,6 +192,20 @@ public class UDPServer implements Runnable {
     }
 
     // stopServer ve closeServer metotları aynı kalabilir
-    public void stopServer() { /* ... */ }
-    private void closeServer() { /* ... */ }
+    public void stop() {
+        running = false;          // while(running) döngüsünü kırar
+        if (selector != null) {
+            selector.wakeup();    // select()’i uyandırır
+        }
+    }
+
+
+    private void closeServer() {
+        try {
+            if (channel != null && channel.isOpen()) channel.close();
+            if (selector != null && selector.isOpen()) selector.close();
+        } catch (IOException e) {
+            System.err.println("ERROR: Failed to close network resources: " + e.getMessage());
+        }
+    }
 }

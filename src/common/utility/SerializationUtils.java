@@ -49,8 +49,6 @@ public class SerializationUtils {
              ObjectInputStream ois = new ObjectInputStream(bais)) {
             return ois.readObject();
         } catch (IOException | ClassNotFoundException | ClassCastException e) {
-            // ClassNotFoundException: Gelen byte dizisindeki sınıf istemcide/sunucuda bulunamazsa.
-            // ClassCastException: Güvenlik için eklenebilir, beklenmeyen tip gelirse.
             // logger.error("Deserialization failed:", e); // Loglama
             throw new SerializationException("Failed to deserialize object: " + e.getMessage(), e);
         }
