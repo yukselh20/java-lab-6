@@ -62,12 +62,12 @@ public class DumpManager {
         File file = new File(fileName);
         if (!file.exists()) {
             // logger.warn("Koleksiyon dosyası bulunamadı: {}", fileName);
-            System.err.println("ERROR: Collection file not found: " + fileName + ". Boş koleksiyon ile başlanıyor.");
+            System.err.println("ERROR: Collection file not found: " + fileName + ". Starting with an empty collection.");
             return new LinkedHashMap<>();
         }
         if (!file.canRead()) {
             // logger.error("Koleksiyon dosyası okuma izni yok: {}", fileName);
-            System.err.println("ERROR: Unable to read collection file (no permission): " + fileName + ". Boş koleksiyon ile başlanıyor.");
+            System.err.println("ERROR: Unable to read collection file (no permission): " + fileName + ". Starting with an empty collection.");
             return new LinkedHashMap<>();
         }
 
@@ -79,7 +79,7 @@ public class DumpManager {
                 System.err.println("ERROR: Collection read from file is null, creating empty collection.");
                 col = new LinkedHashMap<>();
             }
-            System.out.println("Koleksiyon dosyadan başarıyla yüklendi.");
+            System.out.println("Collection loaded successfully from the file.");
             return col;
         } catch (FileNotFoundException e) {
             // logger.error("Dosya bulunamadı (beklenmedik): {}", fileName);

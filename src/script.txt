@@ -1,7 +1,7 @@
 info
 
 insert 101
-Lufthansa Flight
+Flight
 100.0
 250.5
 500

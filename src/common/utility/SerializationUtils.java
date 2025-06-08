@@ -2,7 +2,7 @@ package common.utility;
 
 import java.io.*;
 
-import common.exceptions.SerializationException; // Özel exception sınıfımız
+import common.exceptions.SerializationException;
 
 
 /**

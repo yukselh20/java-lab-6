@@ -40,12 +40,6 @@ public class CoordinatesForm {
             throw new InvalidFormException("Coordinates did not pass validation.");
         }
 
-
-//        Coordinates coordinates = new Coordinates(x, y);
-//        if (!coordinates.validate()) {
-//            throw new InvalidFormException("Coordinates did not pass validation.");
-//        }
-//        return coordinates;
     }
 
     private float readFloatGreaterThan(double limit, String errorMsg) throws IncorrectInputInScriptException {

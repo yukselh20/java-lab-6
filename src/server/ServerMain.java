@@ -11,6 +11,7 @@ package server;
 import server.managers.CollectionManager;
 import server.managers.DumpManager;
 import server.network.UDPServer;
+import server.processing.CommandProcessor;
 
 import java.io.IOException;
 
@@ -53,7 +54,8 @@ public class ServerMain {
         // Manager'ları başlat
         DumpManager dumpManager = new DumpManager(fileName);
         CollectionManager collectionManager = new CollectionManager(dumpManager);
-        UDPServer udpServer = new UDPServer(port, collectionManager);
+        CommandProcessor commandProcessor = new CommandProcessor(collectionManager);
+        UDPServer udpServer = new UDPServer(port, commandProcessor);
 
         // Shutdown hook ekle (uygulama kapanırken koleksiyonu kaydetmek için)
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
