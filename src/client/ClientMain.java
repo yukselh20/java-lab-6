@@ -45,7 +45,4 @@ public class ClientMain {
         System.out.println("Client shutting down.");
         udpClient.close(); // Ağ kaynaklarını serbest bırak
     }
-
-
-
 }

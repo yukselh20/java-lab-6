@@ -17,11 +17,6 @@ public record Coordinates(float x, float y) implements Serializable {
         return new Coordinates(x, y);
     }
 
-//    @Override
-//    public boolean validate() {
-//        return x > -661 && y > -493;
-//    }
-
     @Override
     public String toString() {
         return "(" + x + ", " + y + ")";

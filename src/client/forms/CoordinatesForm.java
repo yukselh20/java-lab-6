@@ -1,61 +1,57 @@
 package client.forms;
 
 import client.utility.Interrogator;
-import common.models.Coordinates;
-import common.exceptions.InvalidFormException;
-import common.exceptions.IncorrectInputInScriptException;
+import client.utility.ValidatedInputReader;
 import client.utility.console.Console;
-
-import java.util.Scanner;
+import common.exceptions.IncorrectInputInScriptException;
+import common.exceptions.InvalidFormException;
+import common.models.Coordinates;
+import common.utility.validation.FloatLowerBoundStrategy;
 
 /**
- * Coordinates nesnesi oluşturmak için form.
+ * A form for creating a Coordinates object.
+ * This class has been refactored to use the reusable ValidatedInputReader and strategies.
  */
 public class CoordinatesForm {
     private final Console console;
-    private final Scanner scanner;
+    private final ValidatedInputReader reader;
 
     public CoordinatesForm(Console console) {
         this.console = console;
-        this.scanner = Interrogator.getUserScanner();
+        // Initialize the reader using the global scanner and console
+        this.reader = new ValidatedInputReader(Interrogator.getUserScanner(), console);
     }
 
     /**
-     * Kullanıcıdan koordinat bilgilerini alır ve Coordinates nesnesini oluşturur.
+     * Builds a new Coordinates object by prompting the user for x and y values
+     * and validating them using the FloatLowerBoundStrategy.
      *
-     * @return Oluşturulan Coordinates nesnesi.
-     * @throws IncorrectInputInScriptException Girdi hatasında.
-     * @throws InvalidFormException            Oluşturulan nesne doğrulanamazsa.
+     * @return The newly created and validated Coordinates object.
+     * @throws IncorrectInputInScriptException If running in script mode and input is invalid.
+     * @throws InvalidFormException If the final combined coordinates fail model-level validation.
      */
     public Coordinates build() throws IncorrectInputInScriptException, InvalidFormException {
-        console.println("Enter a coordinate X (float, > -661):");
-        float x = readFloatGreaterThan(-661, "The value must be greater than -661.");
+        console.println("Enter coordinate data:");
 
-        console.println("Enter a coordinate Y (float, > -493):");
-        float y = readFloatGreaterThan(-493, "The value must be greater than -493.");
+        // Use the reader and the float strategy for the 'x' coordinate
+        float x = reader.request(
+                "Enter a coordinate X (float, > -661):",
+                new FloatLowerBoundStrategy(-661f, "The value must be greater than -661")
+        );
 
-        try { //static Factory olayı tekrardan kullanıldı.
+        // Reuse the reader and the float strategy for the 'y' coordinate
+        float y = reader.request(
+                "Enter a coordinate Y (float, > -493):",
+                new FloatLowerBoundStrategy(-493f, "The value must be greater than -493")
+        );
+
+        try {
+            // The final object creation might still have its own validation rules
+            // (e.g., in a static factory method), so we keep this try-catch block.
             return Coordinates.createCoordinates(x, y);
         } catch (IllegalArgumentException e) {
-            throw new InvalidFormException("Coordinates did not pass validation.");
-        }
-
-    }
-
-    private float readFloatGreaterThan(double limit, String errorMsg) throws IncorrectInputInScriptException {
-        while (true) {
-            try {
-                String line = scanner.nextLine().trim();
-                float value = Float.parseFloat(line);
-                if (value > limit) return value;
-                else {
-                    console.printError(errorMsg);
-                    if (Interrogator.fileMode()) throw new IncorrectInputInScriptException();
-                }
-            } catch (NumberFormatException e) {
-                console.printError("Enter a number in float format.");
-                if (Interrogator.fileMode()) throw new IncorrectInputInScriptException();
-            }
+            // This catches errors from the Coordinates model itself, not from the input parsing.
+            throw new InvalidFormException("Coordinates did not pass validation: " + e.getMessage());
         }
     }
 }

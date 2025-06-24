@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 public class UDPServer implements Runnable {
-    // BUFFER_SIZE sabiti kaldırıldı.
 
     private final int port;
     private final CommandProcessor commandProcessor;
@@ -39,7 +38,7 @@ public class UDPServer implements Runnable {
             initializeServer();
             System.out.println("UDP Server started successfully on port " + port);
 
-            // Buffer boyutu artık merkezi NetworkConfig'den alınıyor.
+            // Buffer boyutu NetworkConfig geliyor.
             ByteBuffer buffer = ByteBuffer.allocate(NetworkConfig.MAX_PACKET_SIZE);
 
             while (running) {

@@ -12,5 +12,19 @@
     "comment": "Economy ticket",
     "type": "USUAL",
     "event": null
+  },
+  "123": {
+    "id": 1,
+    "name": "hammmza",
+    "coordinates": {
+      "x": 15.0,
+      "y": 11.0
+    },
+    "creationDate": "2025-06-24",
+    "price": 101,
+    "discount": 78,
+    "comment": null,
+    "type": "VIP",
+    "event": null
   }
 }

@@ -5,6 +5,5 @@ package common.network;
  * "Magic numbers" (kod içine gömülü sihirli sayılar) kullanımını engeller.
  */
 public class NetworkConfig {
-
     public static final int MAX_PACKET_SIZE = 8192;
 }

@@ -1,144 +1,58 @@
 package client.forms;
 
 import client.utility.Interrogator;
-import common.models.Coordinates;
-import common.models.Ticket;
-import common.models.TicketType;
-import common.exceptions.InvalidFormException;
-import common.exceptions.IncorrectInputInScriptException;
+import client.utility.ValidatedInputReader;
 import client.utility.console.Console;
+import common.exceptions.IncorrectInputInScriptException;
+import common.exceptions.InvalidFormException;
+import common.models.*;
+import common.utility.validation.*;
 
 import java.util.Scanner;
 
-/**
- * Ticket nesnesi oluşturmak için form.
- * Bu form, gerekli alanları almak için CoordinatesForm ve EventForm sınıflarını kullanır.
- */
 public class TicketForm {
     private final Console console;
-    private final Scanner scanner;
+    private final Scanner scanner; // Kept for simple, non-validated string input like comments
+    private final ValidatedInputReader reader;
 
     public TicketForm(Console console) {
         this.console = console;
         this.scanner = Interrogator.getUserScanner();
+        this.reader = new ValidatedInputReader(this.scanner, console);
     }
 
-    /**
-     * Kullanıcı girdilerine göre Ticket nesnesi oluşturur.
-     *
-     * @return Oluşturulan Ticket nesnesi.
-     * @throws IncorrectInputInScriptException Girdi hatasında.
-     * @throws InvalidFormException            Oluşturulan nesne doğrulanamazsa.
-     */
     public Ticket build() throws IncorrectInputInScriptException, InvalidFormException {
-        console.println("Enter the name Ticket:");
-        String name = readNonEmptyString();
+        String name = reader.request("Enter the name for the Ticket:", new NonEmptyStringStrategy());
 
-        console.println("Enter the coordinate data:");
         Coordinates coordinates = new CoordinatesForm(console).build();
 
-        console.println("Enter price (integer > 0):");
-        int price = readPositiveInt();
+        int price = reader.request("Enter price (integer > 0):", new PositiveIntegerStrategy());
 
-        console.println("Enter discount (integer > 0 and <= 100):");
-        long discount = readDiscount();
+        long discount = reader.request("Enter discount (integer > 0 and <= 100):", new DiscountStrategy());
 
         console.println("Enter a comment (can be blank):");
         String comment = scanner.nextLine().trim();
-        if (comment.isEmpty()) comment = null;
+        if (comment.isEmpty()) {
+            comment = null;
+        }
         if (comment != null && comment.length() > 631) {
             throw new InvalidFormException("The comment length should be no more than 631 characters long.");
         }
 
-        TicketType type;
-        while (true) {
-            console.println("Enter the Ticket type. Available values: " + TicketType.names());
-            String typeStr = readNonEmptyString();
-            try {
-                type = TicketType.valueOf(typeStr.toUpperCase());
-                break; // Geçerli değer alındı, döngüden çık
-            } catch (IllegalArgumentException e) {
-                console.printError("Invalid Ticket type. Repeat entry.");
-                // Eğer script modunda çalışıyorsanız, belirli koşullarda exception fırlatabilirsiniz:
-                if (Interrogator.fileMode()) {
-                    throw new IncorrectInputInScriptException("Invalid Ticket type in the script.");
-                }
-            }
+        console.println("Available Ticket types: " + TicketType.names());
+        TicketType type = reader.request("Enter the Ticket type:", new EnumStrategy<>(TicketType.class));
+
+        // Event creation
+        Event event = null;
+        String createEventInput = reader.request("Create an Event for this Ticket? (yes/no):", new YesNoStrategy());
+        if (createEventInput.equals("yes")) {
+            event = new EventForm(console).build();
         }
 
-
-        String createEventInput;
-        while (true) {
-            console.println("Create an Event for Ticket? (yes/no):");
-            createEventInput = scanner.nextLine().trim().toLowerCase();
-            if (createEventInput.equals("yes") || createEventInput.equals("no")) {
-                break;
-            } else {
-                console.printError("Enter 'yes' or 'no'.");
-                // Eğer script modunda çalışıyorsak, hatalı giriş durumunda exception fırlatmak isteyebilirsiniz:
-                if (Interrogator.fileMode()) {
-                    throw new IncorrectInputInScriptException("Incorrect entry for yes/no.");
-                }
-            }
-        }
-
-        try { // Oluşturulan nesne doğrulanır.
-            return Ticket.createTicket(name, coordinates, price, discount, comment, type,
-                    createEventInput.equals("yes") ? new EventForm(console).build() : null);
+        try {
+            return Ticket.createTicket(name, coordinates, price, discount, comment, type, event);
         } catch (IllegalArgumentException e) {
-            throw new InvalidFormException("Event failed validation: " + e.getMessage());
-        }
-
-//        Ticket ticket = new Ticket(name, coordinates, price, discount, comment, type, event);
-//        if (!ticket.validate()) {
-//            throw new InvalidFormException("Ticket did not pass validation.");
-//        }
-//        return ticket;
-    }
-
-    private String readNonEmptyString() throws IncorrectInputInScriptException {
-        while (true) {
-            String line = scanner.nextLine().trim();
-            if (!line.isEmpty()) {
-                return line;
-            } else {
-                console.printError("The input cannot be empty.");
-                if (Interrogator.fileMode()) throw new IncorrectInputInScriptException();
-            }
-        }
-    }
-
-    private int readPositiveInt() throws IncorrectInputInScriptException {
-        while (true) {
-            String line = scanner.nextLine().trim();
-            try {
-                int value = Integer.parseInt(line);
-                if (value > 0) return value;
-                else {
-                    console.printError("The number must be greater than 0.");
-                    if (Interrogator.fileMode()) throw new IncorrectInputInScriptException();
-                }
-            } catch (NumberFormatException e) {
-                console.printError("Enter a valid integer.");
-                if (Interrogator.fileMode()) throw new IncorrectInputInScriptException();
-            }
-        }
-    }
-
-    private long readDiscount() throws IncorrectInputInScriptException {
-        while (true) {
-            String line = scanner.nextLine().trim();
-            try {
-                long value = Long.parseLong(line);
-                if (value > 0 && value <= 100) return value;
-                else {
-                    console.printError("The discount must be greater than 0 and not exceed 100.");
-                    if (Interrogator.fileMode()) throw new IncorrectInputInScriptException();
-                }
-            } catch (NumberFormatException e) {
-                console.printError("Enter a valid integer.");
-                if (Interrogator.fileMode()) throw new IncorrectInputInScriptException();
-            }
+            throw new InvalidFormException("Ticket failed validation: " + e.getMessage());
         }
     }
 }

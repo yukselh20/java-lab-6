@@ -1,28 +1,15 @@
 package server;
 
-
-//Değişiklikler: Sunucu uygulamasının ana giriş noktası.
-//Manager'ları başlatır, shutdown hook ekler ve ağ sunucusunu
-// (henüz oluşturmadık) başlatıp çalıştırır.
-
-//Neden? Uygulamanın sunucu tarafını başlatmak ve yönetmek için
-//merkezi bir nokta.
-
 import server.managers.CollectionManager;
 import server.managers.DumpManager;
 import server.network.UDPServer;
 import server.processing.CommandProcessor;
 
-import java.io.IOException;
-
 public class ServerMain {
 
-    // private static final Logger logger = LoggerFactory.getLogger(ServerMain.class);
-    // Port numarasını bir yapılandırma dosyasından veya argümandan almak daha iyi olur
     private static final int DEFAULT_PORT = 54321; // Örnek port
 
     public static void main(String[] args) {
-        // Portu argümandan almayı deneyelim, yoksa varsayılanı kullanalım
         int port = DEFAULT_PORT;
         if (args.length > 0) {
             try {

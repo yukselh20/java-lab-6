@@ -53,7 +53,6 @@ public class UDPClient {
         }
 
         ByteBuffer sendBuffer = ByteBuffer.wrap(requestBytes);
-        // Buffer boyutu artık merkezi NetworkConfig'den alınıyor.
         ByteBuffer receiveBuffer = ByteBuffer.allocate(NetworkConfig.MAX_PACKET_SIZE);
 
         for (int attempt = 0; attempt < MAX_RETRIES; attempt++) {
